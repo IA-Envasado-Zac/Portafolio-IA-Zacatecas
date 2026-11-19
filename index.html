@@ -160,19 +160,47 @@
         </div>
         
         <nav class="flex gap-6">
-            <a href="#" class="text-gray-300 hover:text-[#FFC107] transition-colors duration-300 text-sm uppercase tracking-wider font-semibold">Inicio</a>
+
             <a href="#" class="text-[#FFC107] text-glow transition-colors duration-300 text-sm uppercase tracking-wider font-semibold">Proyectos</a>
-            <a href="#" class="text-gray-300 hover:text-[#FFC107] transition-colors duration-300 text-sm uppercase tracking-wider font-semibold">Equipo</a>
+           
+
         </nav>
     </header>
 
     <!-- Contenido Principal -->
     <main class="relative z-10 container mx-auto px-6 py-12 md:py-20">
         
-        <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4">Hub de <span class="text-[#FFC107] text-glow">Innovación</span></h2>
-            <p class="text-gray-400 max-w-2xl mx-auto text-lg">Explora las soluciones de inteligencia de negocios y aplicaciones empresariales desarrolladas por nuestro departamento de IA.</p>
-        </div>
+        <div class="text-center mb-12">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Menú de <span class="text-[#FFC107] text-glow">Inicio</span></h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg mb-8">Conoce los tableros de datos y aplicaciones digitales desarrollados por nuestro equipo de IA para facilitar y optimizar las operaciones de Envasado.</p>
+            
+            <!-- Botones tipo pestaña para filtrar por departamento -->
+            <div class="inline-flex flex-wrap justify-center gap-3 p-2 rounded-2xl bg-[#10235C]/40 border border-white/10 backdrop-blur-md">
+                <button onclick="filterProjects('Todos', this)" class="tab-btn active px-6 py-2.5 rounded-xl text-sm uppercase tracking-wider font-bold transition-all duration-300 bg-[#FFC107] text-[#0B1021] shadow-[0_0_15px_rgba(255,193,7,0.4)]">
+                    Todos
+                </button>
+                <button onclick="filterProjects('Seguridad', this)" class="tab-btn px-6 py-2.5 rounded-xl text-sm uppercase tracking-wider font-semibold transition-all duration-300 text-gray-300 hover:text-[#FFC107] hover:bg-white/5">
+                    Seguridad
+                </button>
+                <button onclick="filterProjects('Calidad', this)" class="tab-btn px-6 py-2.5 rounded-xl text-sm uppercase tracking-wider font-semibold transition-all duration-300 text-gray-300 hover:text-[#FFC107] hover:bg-white/5">
+                    Calidad
+                </button>
+                <button onclick="filterProjects('Medio Ambiente', this)" class="tab-btn px-6 py-2.5 rounded-xl text-sm uppercase tracking-wider font-semibold transition-all duration-300 text-gray-300 hover:text-[#FFC107] hover:bg-white/5">
+                    Medio Ambiente
+                </button>
+                <button onclick="filterProjects('Mantenimiento', this)" class="tab-btn px-6 py-2.5 rounded-xl text-sm uppercase tracking-wider font-semibold transition-all duration-300 text-gray-300 hover:text-[#FFC107] hover:bg-white/5">
+                    Mantenimiento
+                </button>
+                <button onclick="filterProjects('Logística', this)" class="tab-btn px-6 py-2.5 rounded-xl text-sm uppercase tracking-wider font-semibold transition-all duration-300 text-gray-300 hover:text-[#FFC107] hover:bg-white/5">
+                    Logística
+                </button>
+                <button onclick="filterProjects('Gente', this)" class="tab-btn px-6 py-2.5 rounded-xl text-sm uppercase tracking-wider font-semibold transition-all duration-300 text-gray-300 hover:text-[#FFC107] hover:bg-white/5">
+                    Gente
+                </button>
+                <button onclick="filterProjects('Gestión', this)" class="tab-btn px-6 py-2.5 rounded-xl text-sm uppercase tracking-wider font-semibold transition-all duration-300 text-gray-300 hover:text-[#FFC107] hover:bg-white/5">
+                    Gestión
+                </button>
+            </div>
 
         <!-- Grid de Proyectos -->
         <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -237,102 +265,133 @@
         const projectsData = [
             {
                 id: 1,
-                title: "OEE Envasado Tracker",
+                title: "Centro de Visualización de Datos con IA",
                 type: "Power BI",
+                department: "Mantenimiento", // <-- Departamento al que pertenece
                 icon: "fa-chart-pie",
-                shortDesc: "Monitoreo en tiempo real de la Eficiencia General de los Equipos (OEE) de las líneas principales.",
-                fullDesc: "Este tablero interactivo de Power BI se conecta a las bases de datos SQL de piso para recopilar información de rendimiento, disponibilidad y calidad. Utiliza modelos predictivos de IA para detectar posibles paros de máquina antes de que ocurran.",
-                tags: ["Data Analytics", "Power BI", "OEE", "Mantenimiento"],
+                shortDesc: "Filtra datos por línea y equipo para detectar fallas repetitivas, dar seguimiento a acciones y mejorar las decisiones en Mantenimiento.",
+                fullDesc: "Portal en Power BI que centraliza los indicadores clave del mantenimiento (costos, planeación y confiabilidad), usando inteligencia artificial para automatizar datos y analizar fallas.",
+                tags: ["Power BI", "Mantenimiento", "MTTR", "IA"],
                 img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                link: "#enlace-a-tu-power-bi-1"
+                link: "https://app.powerbi.com/Redirect?action=OpenApp&appId=f8bdaf4c-8324-428f-b5a9-90c2095f960a&ctid=cef04b19-7776-4a94-b89b-375c77a8f936&experience=power-bi"
             },
             {
                 id: 2,
-                title: "App Control de Mermas",
+                title: "Registro LILA",
                 type: "Power Apps",
+                department: "Mantenimiento", // <-- Departamento al que pertenece
                 icon: "fa-mobile-screen-button",
-                shortDesc: "Aplicación móvil para el registro ágil y categorización de mermas en línea de producción.",
-                fullDesc: "Desarrollada en Power Apps, esta herramienta permite a los operadores escanear códigos de barras, tomar fotografías y registrar mermas en segundos. La información fluye directamente a SharePoint y detona flujos en Power Automate para alertas críticas.",
-                tags: ["Power Apps", "UX/UI", "Operaciones", "Automatización"],
+                shortDesc: "Sistema digital para registrar y validar tareas diarias de limpieza, inspección y lubricación (LILA) en las líneas de producción.",
+                fullDesc: "Aplicación que digitaliza los checklists de limpieza, inspección y lubricación (LILA) en las 14 líneas de envasado, permitiendo a los operadores registrar resultados por turno, justificar pendientes y asegurar el cumplimiento operativo.",
+                tags: ["Power Apps", "Mantenimiento", "Operación", "LILA"],
                 img: "https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                link: "#enlace-a-tu-power-app-1"
+                link: "https://apps.powerapps.com/play/e/default-cef04b19-7776-4a94-b89b-375c77a8f936/a/197d1c18-a54a-4250-a1bd-99e50229c857?tenantId=cef04b19-7776-4a94-b89b-375c77a8f936&hint=9707edc6-b960-4bb1-81e6-d1ab987e7f6b&sourcetime=1788898390057"
             },
+            
             {
                 id: 3,
-                title: "Predicción de Demanda",
+                title: "Cumplimiento LILA",
                 type: "Power BI",
-                icon: "fa-brain",
-                shortDesc: "Análisis predictivo de la demanda de producción para optimización de inventarios.",
-                fullDesc: "Integración de scripts de Python (Machine Learning) dentro de Power BI para proyectar la demanda mensual de diferentes formatos de envase. Ayuda al equipo de planeación a reducir el exceso de stock.",
-                tags: ["Machine Learning", "Power BI", "Planeación", "IA"],
+                department: "Mantenimiento", // <-- Departamento al que pertenece
+                icon: "fa-chart-pie",
+                shortDesc: "Tablero en Power BI que mide en tiempo real el porcentaje de cumplimiento de las tareas LILA por línea, equipo y turno.",
+                fullDesc: "Dashboard en Power BI que consolida los registros de limpieza, inspección y lubricación (LILA) en las líneas de envasado, mostrando indicadores semanales y diarios, semáforos de cumplimiento por turno y equipo, y control de justificaciones para detectar desviaciones rápidamente.",
+                tags: ["Power BI", "Mantenimiento", "Control", "Cumplimiento"],
                 img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                link: "#"
+                link: "https://app.powerbi.com/links/w3yDIv3u-D?ctid=cef04b19-7776-4a94-b89b-375c77a8f936&pbi_source=linkShare&bookmarkGuid=954e8f5b-045b-4f96-b957-d4b32efb5a10"
             },
             {
                 id: 4,
-                title: "Auditoría de Calidad 360",
+                title: "Registro de Anomalías de Predictivo",
                 type: "Power Apps",
-                icon: "fa-clipboard-check",
-                shortDesc: "Plataforma centralizada para auditores de calidad en piso.",
-                fullDesc: "Sustituye los formatos de papel. La aplicación guía al auditor mediante checklists dinámicos, validación de tolerancias matemáticas en tiempo real y generación automática de reportes de no conformidad.",
-                tags: ["Power Apps", "Calidad", "Cero Papel"],
+                department: "Mantenimiento", // <-- Departamento al que pertenece
+                icon: "fa-mobile-screen-button",
+                shortDesc: "Registrar y dar seguimiento a las fallas tempranas detectadas por Mantenimiento Predictivo.",
+                fullDesc: "Aplicación donde el equipo de Mantenimiento Predictivo registra las anomalías detectadas en los equipos, permitiendo monitorear su estado y dar seguimiento a las acciones hasta resolverlas.",
+                tags: ["Power Apps", "Mantenimiento", "Prevención", "Seguimiento"],
                 img: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                link: "#"
+                link: "https://apps.powerapps.com/play/e/default-cef04b19-7776-4a94-b89b-375c77a8f936/a/727ff407-bdda-4435-ad3d-cdc83587d54c?tenantId=cef04b19-7776-4a94-b89b-375c77a8f936&hint=a544de8f-b5ea-4f24-8f84-7c1a66e8fb07&sourcetime=1795032175004"
             },
             {
                 id: 5,
-                title: "Visor de Consumo Energético",
-                type: "Power BI",
-                icon: "fa-bolt",
-                shortDesc: "Dashboard para la sostenibilidad y control de gastos energéticos de la planta.",
-                fullDesc: "Visualización interactiva que correlaciona el volumen de producción envasada con el consumo de kilowatts-hora y agua. Permite identificar anomalías en el consumo de los compresores y líneas de soplado.",
-                tags: ["Power BI", "Sostenibilidad", "IoT"],
+                title: "Bitácora de Taller de Máquinas Eléctricas",
+                type: "Power Apps",
+                department: "Mantenimiento", // <-- Departamento al que pertenece
+                icon: "fa-mobile-screen-button",
+                shortDesc: "Anexar, ubicar y dar seguimiento a las piezas reparadas en el taller de Máquinas Eléctricas.",
+                fullDesc: "Aplicación para gestionar el inventario del taller de Máquinas Eléctricas, permitiendo registrar cada pieza reparada, saber su ubicación exacta y dar seguimiento a su estado hasta su entrega.",
+                tags: ["Power BI", "Mantenimiento", "Inventario", "Taller"],
                 img: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                link: "#"
+                link: "https://apps.powerapps.com/play/e/default-cef04b19-7776-4a94-b89b-375c77a8f936/a/17ff955e-bfe4-467d-959b-e00e522e7fd3?tenantId=cef04b19-7776-4a94-b89b-375c77a8f936&hint=e342e5b8-3f80-48b6-bcec-3c8330f2e907&sourcetime=1795032525580"
             },
             {
                 id: 6,
-                title: "Gestor de Capacitaciones",
+                title: "Monitoreo y Registro de UPs",
                 type: "Power Apps",
-                icon: "fa-users-gear",
-                shortDesc: "Portal para administrar las matrices de habilidades de los operadores.",
-                fullDesc: "App interactiva donde los supervisores pueden evaluar las competencias técnicas de su equipo, agendar cursos y mantener la matriz de flexibilidad actualizada para la asignación de turnos.",
-                tags: ["Power Apps", "Recursos Humanos", "Gestión"],
+                department: "Calidad", // <-- Departamento al que pertenece
+                icon: "fa-mobile-screen-button",
+                shortDesc: "Registrar y analizar datos de los pasteurizadores, detectar tendencias de calidad y consultar guías de fallas y soluciones.",
+                fullDesc: "Aplicación para Calidad que registra y grafica los datos de sondas en los pasteurizadores para detectar mejoras en el proceso, además de incluir una guía técnica de componentes, fallas y soluciones para agilizar el diagnóstico.",
+                tags: ["Power Apps", "Calidad", "Pasteurización", "Tendencias"],
                 img: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                link: "#"
+                link: "https://apps.powerapps.com/play/e/default-cef04b19-7776-4a94-b89b-375c77a8f936/a/73c9166a-8fe4-4f43-9f72-8a341a5bf93d?tenantId=cef04b19-7776-4a94-b89b-375c77a8f936&hint=d3208806-8a8c-4299-b834-6b5a133ae636&sourcetime=1795032600513"
             }
         ];
 
-        // --- 2. RENDERIZADO DE TARJETAS ---
+        // --- 2. RENDERIZADO Y FILTRADO DE TARJETAS ---
         const grid = document.getElementById('projects-grid');
-        
-        projectsData.forEach(project => {
-            const isBI = project.type === "Power BI";
-            const badgeColor = isBI ? "bg-yellow-600/20 text-yellow-500 border-yellow-500/30" : "bg-blue-600/20 text-blue-400 border-blue-500/30";
+
+        function renderProjects(category = 'Todos') {
+            grid.innerHTML = ''; // Limpia las tarjetas actuales
             
-            const cardHTML = `
-                <div class="glass-card cursor-pointer group flex flex-col h-full" onclick="openModal(${project.id})">
-                    <div class="p-6 flex-grow">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[#FFC107] text-xl border border-white/10 group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,193,7,0.2)]">
-                                <i class="fa-solid ${project.icon}"></i>
+            const filtered = category === 'Todos' 
+                ? projectsData 
+                : projectsData.filter(project => project.department === category);
+
+            filtered.forEach(project => {
+                const isBI = project.type === "Power BI";
+                const badgeColor = isBI ? "bg-yellow-600/20 text-yellow-500 border-yellow-500/30" : "bg-blue-600/20 text-blue-400 border-blue-500/30";
+                
+                const cardHTML = `
+                    <div class="glass-card cursor-pointer group flex flex-col h-full" onclick="openModal(${project.id})">
+                        <div class="p-6 flex-grow">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[#FFC107] text-xl border border-white/10 group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,193,7,0.2)]">
+                                    <i class="fa-solid ${project.icon}"></i>
+                                </div>
+                                <span class="text-xs font-semibold px-3 py-1 rounded-full border ${badgeColor} backdrop-blur-md">
+                                    ${project.type}
+                                </span>
                             </div>
-                            <span class="text-xs font-semibold px-3 py-1 rounded-full border ${badgeColor} backdrop-blur-md">
-                                ${project.type}
+                            <h3 class="text-xl font-bold text-white mb-3 font-futuristic group-hover:text-[#FFC107] transition-colors">${project.title}</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">${project.shortDesc}</p>
+                        </div>
+                        <div class="px-6 py-4 border-t border-white/5 flex items-center justify-between mt-auto">
+                            <span class="text-[#FFC107] text-sm font-semibold flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                                Ver detalles <i class="fa-solid fa-arrow-right text-xs"></i>
                             </span>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-3 font-futuristic group-hover:text-[#FFC107] transition-colors">${project.title}</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed">${project.shortDesc}</p>
                     </div>
-                    <div class="px-6 py-4 border-t border-white/5 flex items-center justify-between mt-auto">
-                        <span class="text-[#FFC107] text-sm font-semibold flex items-center gap-2 group-hover:translate-x-2 transition-transform">
-                            Ver detalles <i class="fa-solid fa-arrow-right text-xs"></i>
-                        </span>
-                    </div>
-                </div>
-            `;
-            grid.insertAdjacentHTML('beforeend', cardHTML);
-        });
+                `;
+                grid.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+
+        function filterProjects(category, clickedBtn) {
+            // Reinicia el estilo de todos los botones
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-6 py-2.5 rounded-xl text-sm uppercase tracking-wider font-semibold transition-all duration-300 text-gray-300 hover:text-[#FFC107] hover:bg-white/5";
+            });
+
+            // Resalta en dorado el botón presionado
+            clickedBtn.className = "tab-btn active px-6 py-2.5 rounded-xl text-sm uppercase tracking-wider font-bold transition-all duration-300 bg-[#FFC107] text-[#0B1021] shadow-[0_0_15px_rgba(255,193,7,0.4)]";
+
+            // Dibuja los proyectos de esa categoría
+            renderProjects(category);
+        }
+
+        // Cargar todos al abrir la página
+        renderProjects('Todos');
 
         // --- 3. LÓGICA DEL MODAL ---
         const modal = document.getElementById('project-modal');
