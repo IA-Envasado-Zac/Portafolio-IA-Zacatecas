@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envasado IA Zacatecas - Portafolio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Orbitron (Futurista para títulos) & Inter (Legibilidad para textos) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome para Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --color-navy-dark: #0B1021;
+            --color-navy-light: #10235C;
+            --color-gold: #FFC107;
+            --color-gold-glow: rgba(255, 193, 7, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-navy-dark);
+            color: #ffffff;
+            margin: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, .font-futuristic {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Canvas de fondo para partículas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none; /* Permite hacer clic a través del canvas */
+            background: radial-gradient(circle at center, var(--color-navy-light) 0%, var(--color-navy-dark) 100%);
+        }
+
+        /* Efecto Glassmorphism para las tarjetas */
+        .glass-card {
+            background: rgba(16, 35, 92, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 193, 7, 0.15);
+            border-radius: 1rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Resplandor superior en las tarjetas */
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 193, 7, 0.6);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 193, 7, 0.2);
+        }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Modal Glassmorphism */
+        .modal-glass {
+            background: rgba(11, 16, 33, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 193, 7, 0.4);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 193, 7, 0.1);
+        }
+
+        /* Texto brillante */
+        .text-glow {
+            text-shadow: 0 0 10px var(--color-gold-glow);
+        }
+
+        /* Botón de acción principal */
+        .btn-gold {
+            background: linear-gradient(45deg, #FFB703, #FFC107);
+            color: var(--color-navy-dark);
+            border: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-gold::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.2);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-gold:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .btn-gold:hover {
+            box-shadow: 0 0 20px var(--color-gold-glow);
+            transform: scale(1.05);
+        }
+
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--color-navy-dark); }
+        ::-webkit-scrollbar-thumb { background: #2A3B71; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--color-gold); }
+
+        /* Animación de entrada modal */
+        @keyframes modalEnter {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-active .modal-content {
+            animation: modalEnter 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-[#FFC107] selection:text-[#0B1021]">
+
+    <!-- Fondo de Partículas Interactivos -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Header / Navbar -->
+    <header class="relative z-10 w-full pt-8 pb-4 px-6 md:px-12 flex flex-col md:flex-row items-center justify-between border-b border-white/10">
+        <div class="flex items-center gap-4 mb-4 md:mb-0">
+            <!-- Intentará cargar tu logo, si no se encuentra mostrará un ícono IA alternativo -->
+            <img src="Recurso 4.png" alt="Logo Envasado IA" class="h-16 object-contain drop-shadow-[0_0_10px_rgba(255,193,7,0.5)]" onerror="this.outerHTML='<div class=\'h-16 w-16 bg-white/10 rounded-full flex items-center justify-center border border-[#FFC107] text-[#FFC107] shadow-[0_0_15px_rgba(255,193,7,0.4)]\'><i class=\'fa-solid fa-brain text-3xl\'></i></div>'">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold tracking-wider text-white">
+                    ENVASADO <span class="text-[#FFC107] text-glow">IA</span>
+                </h1>
+                <p class="text-sm text-gray-400 font-futuristic tracking-widest">ZACATECAS</p>
+            </div>
+        </div>
+        
+        <nav class="flex gap-6">
+            <a href="#" class="text-gray-300 hover:text-[#FFC107] transition-colors duration-300 text-sm uppercase tracking-wider font-semibold">Inicio</a>
+            <a href="#" class="text-[#FFC107] text-glow transition-colors duration-300 text-sm uppercase tracking-wider font-semibold">Proyectos</a>
+            <a href="#" class="text-gray-300 hover:text-[#FFC107] transition-colors duration-300 text-sm uppercase tracking-wider font-semibold">Equipo</a>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="relative z-10 container mx-auto px-6 py-12 md:py-20">
+        
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Hub de <span class="text-[#FFC107] text-glow">Innovación</span></h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg">Explora las soluciones de inteligencia de negocios y aplicaciones empresariales desarrolladas por nuestro departamento de IA.</p>
+        </div>
+
+        <!-- Grid de Proyectos -->
+        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Las tarjetas se inyectarán aquí mediante JavaScript -->
+        </div>
+
+    </main>
+
+    <!-- Modal (Ventana Emergente) -->
+    <div id="project-modal" class="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 opacity-0 pointer-events-none transition-opacity duration-300 bg-[#0B1021]/80 backdrop-blur-sm">
+        
+        <!-- Contenido del Modal -->
+        <div class="modal-content modal-glass w-full max-w-3xl rounded-2xl overflow-hidden relative shadow-2xl flex flex-col md:flex-row max-h-[90vh]">
+            
+            <!-- Botón Cerrar -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-20 text-gray-400 hover:text-[#FFC107] transition-colors bg-black/40 rounded-full w-8 h-8 flex items-center justify-center hover:scale-110">
+                <i class="fa-solid fa-times"></i>
+            </button>
+
+            <!-- Imagen / Visualización (Mitad Izquierda en Desktop) -->
+            <div class="md:w-1/2 bg-gray-900 relative">
+                <!-- Imagen Placeholder de Alta Calidad -->
+                <img id="modal-img" src="" alt="Preview del Proyecto" class="w-full h-48 md:h-full object-cover opacity-80 mix-blend-screen">
+                <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[rgba(11,16,33,0.9)] to-transparent"></div>
+                
+                <!-- Badge de Herramienta sobre la imagen -->
+                <div class="absolute top-4 left-4 flex items-center gap-2 px-3 py-1 bg-black/60 rounded-full border border-white/20 backdrop-blur-md">
+                    <i id="modal-icon" class="fa-solid text-[#FFC107]"></i>
+                    <span id="modal-type" class="text-xs font-semibold uppercase tracking-wider text-gray-200"></span>
+                </div>
+            </div>
+
+            <!-- Información del Proyecto (Mitad Derecha en Desktop) -->
+            <div class="md:w-1/2 p-8 flex flex-col justify-between overflow-y-auto">
+                <div>
+                    <h3 id="modal-title" class="text-2xl md:text-3xl font-bold text-white mb-2 font-futuristic leading-tight">Título del Proyecto</h3>
+                    
+                    <div class="w-12 h-1 bg-[#FFC107] mb-6 shadow-[0_0_8px_rgba(255,193,7,0.8)]"></div>
+                    
+                    <p id="modal-desc" class="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
+                        Descripción detallada del proyecto. Aquí explicamos qué problema resuelve, cómo se implementó usando las tecnologías de Microsoft y qué impacto tiene en la operación de envasado.
+                    </p>
+
+                    <!-- Tags -->
+                    <div id="modal-tags" class="flex flex-wrap gap-2 mb-8">
+                        <!-- Tags dinámicos -->
+                    </div>
+                </div>
+
+                <!-- Botón de Acción -->
+                <a id="modal-link" href="#" target="_blank" class="btn-gold font-futuristic font-bold py-3 px-6 rounded-lg text-center shadow-lg flex items-center justify-center gap-3 w-full">
+                    <span>Abrir Proyecto</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de Lógica e Interactividad -->
+    <script>
+        // --- 1. DATOS DE LOS PROYECTOS ---
+        const projectsData = [
+            {
+                id: 1,
+                title: "OEE Envasado Tracker",
+                type: "Power BI",
+                icon: "fa-chart-pie",
+                shortDesc: "Monitoreo en tiempo real de la Eficiencia General de los Equipos (OEE) de las líneas principales.",
+                fullDesc: "Este tablero interactivo de Power BI se conecta a las bases de datos SQL de piso para recopilar información de rendimiento, disponibilidad y calidad. Utiliza modelos predictivos de IA para detectar posibles paros de máquina antes de que ocurran.",
+                tags: ["Data Analytics", "Power BI", "OEE", "Mantenimiento"],
+                img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                link: "#enlace-a-tu-power-bi-1"
+            },
+            {
+                id: 2,
+                title: "App Control de Mermas",
+                type: "Power Apps",
+                icon: "fa-mobile-screen-button",
+                shortDesc: "Aplicación móvil para el registro ágil y categorización de mermas en línea de producción.",
+                fullDesc: "Desarrollada en Power Apps, esta herramienta permite a los operadores escanear códigos de barras, tomar fotografías y registrar mermas en segundos. La información fluye directamente a SharePoint y detona flujos en Power Automate para alertas críticas.",
+                tags: ["Power Apps", "UX/UI", "Operaciones", "Automatización"],
+                img: "https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                link: "#enlace-a-tu-power-app-1"
+            },
+            {
+                id: 3,
+                title: "Predicción de Demanda",
+                type: "Power BI",
+                icon: "fa-brain",
+                shortDesc: "Análisis predictivo de la demanda de producción para optimización de inventarios.",
+                fullDesc: "Integración de scripts de Python (Machine Learning) dentro de Power BI para proyectar la demanda mensual de diferentes formatos de envase. Ayuda al equipo de planeación a reducir el exceso de stock.",
+                tags: ["Machine Learning", "Power BI", "Planeación", "IA"],
+                img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                link: "#"
+            },
+            {
+                id: 4,
+                title: "Auditoría de Calidad 360",
+                type: "Power Apps",
+                icon: "fa-clipboard-check",
+                shortDesc: "Plataforma centralizada para auditores de calidad en piso.",
+                fullDesc: "Sustituye los formatos de papel. La aplicación guía al auditor mediante checklists dinámicos, validación de tolerancias matemáticas en tiempo real y generación automática de reportes de no conformidad.",
+                tags: ["Power Apps", "Calidad", "Cero Papel"],
+                img: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                link: "#"
+            },
+            {
+                id: 5,
+                title: "Visor de Consumo Energético",
+                type: "Power BI",
+                icon: "fa-bolt",
+                shortDesc: "Dashboard para la sostenibilidad y control de gastos energéticos de la planta.",
+                fullDesc: "Visualización interactiva que correlaciona el volumen de producción envasada con el consumo de kilowatts-hora y agua. Permite identificar anomalías en el consumo de los compresores y líneas de soplado.",
+                tags: ["Power BI", "Sostenibilidad", "IoT"],
+                img: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                link: "#"
+            },
+            {
+                id: 6,
+                title: "Gestor de Capacitaciones",
+                type: "Power Apps",
+                icon: "fa-users-gear",
+                shortDesc: "Portal para administrar las matrices de habilidades de los operadores.",
+                fullDesc: "App interactiva donde los supervisores pueden evaluar las competencias técnicas de su equipo, agendar cursos y mantener la matriz de flexibilidad actualizada para la asignación de turnos.",
+                tags: ["Power Apps", "Recursos Humanos", "Gestión"],
+                img: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                link: "#"
+            }
+        ];
+
+        // --- 2. RENDERIZADO DE TARJETAS ---
+        const grid = document.getElementById('projects-grid');
+        
+        projectsData.forEach(project => {
+            const isBI = project.type === "Power BI";
+            const badgeColor = isBI ? "bg-yellow-600/20 text-yellow-500 border-yellow-500/30" : "bg-blue-600/20 text-blue-400 border-blue-500/30";
+            
+            const cardHTML = `
+                <div class="glass-card cursor-pointer group flex flex-col h-full" onclick="openModal(${project.id})">
+                    <div class="p-6 flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[#FFC107] text-xl border border-white/10 group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,193,7,0.2)]">
+                                <i class="fa-solid ${project.icon}"></i>
+                            </div>
+                            <span class="text-xs font-semibold px-3 py-1 rounded-full border ${badgeColor} backdrop-blur-md">
+                                ${project.type}
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3 font-futuristic group-hover:text-[#FFC107] transition-colors">${project.title}</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">${project.shortDesc}</p>
+                    </div>
+                    <div class="px-6 py-4 border-t border-white/5 flex items-center justify-between mt-auto">
+                        <span class="text-[#FFC107] text-sm font-semibold flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                            Ver detalles <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </span>
+                    </div>
+                </div>
+            `;
+            grid.insertAdjacentHTML('beforeend', cardHTML);
+        });
+
+        // --- 3. LÓGICA DEL MODAL ---
+        const modal = document.getElementById('project-modal');
+        
+        function openModal(id) {
+            const project = projectsData.find(p => p.id === id);
+            if(!project) return;
+
+            // Llenar datos
+            document.getElementById('modal-title').textContent = project.title;
+            document.getElementById('modal-desc').textContent = project.fullDesc;
+            document.getElementById('modal-type').textContent = project.type;
+            document.getElementById('modal-icon').className = `fa-solid ${project.icon} text-[#FFC107]`;
+            document.getElementById('modal-img').src = project.img;
+            document.getElementById('modal-link').href = project.link;
+
+            // Llenar tags
+            const tagsContainer = document.getElementById('modal-tags');
+            tagsContainer.innerHTML = ''; // Limpiar anteriores
+            project.tags.forEach(tag => {
+                const tagSpan = document.createElement('span');
+                tagSpan.className = 'text-xs px-3 py-1 bg-white/10 border border-white/20 rounded-md text-gray-300 tracking-wide';
+                tagSpan.textContent = tag;
+                tagsContainer.appendChild(tagSpan);
+            });
+
+            // Mostrar Modal
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.add('modal-active');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll de fondo
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.classList.remove('modal-active');
+            document.body.style.overflow = 'auto'; // Restaurar scroll
+        }
+
+        // Cerrar modal al hacer clic afuera del contenido
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // --- 4. FONDO DE PARTÍCULAS INTERACTIVO (CANVAS) ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let particlesArray;
+        
+        // Ajustar tamaño del canvas
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let mouse = {
+            x: null,
+            y: null,
+            radius: 150
+        }
+        
+        window.addEventListener('mousemove', function(event){
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+        
+        window.addEventListener('mouseout', function(){
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+        // Crear clase Partícula
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
+            
+            // Método para dibujar la partícula
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            
+            // Comprobar posición, interacciones del ratón y mover la partícula
+            update() {
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+                
+                // Interacción con el ratón
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx*dx + dy*dy);
+                
+                // Efecto de repulsión suave
+                if (distance < mouse.radius + this.size) {
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) {
+                        this.x += 1;
+                    }
+                    if (mouse.x > this.x && this.x > this.size * 10) {
+                        this.x -= 1;
+                    }
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) {
+                        this.y += 1;
+                    }
+                    if (mouse.y > this.y && this.y > this.size * 10) {
+                        this.y -= 1;
+                    }
+                }
+                
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+        
+        function initParticles() {
+            particlesArray = [];
+            // Ajustar número de partículas basado en tamaño de pantalla
+            let numberOfParticles = (canvas.height * canvas.width) / 15000;
+            
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 1) - 0.5;
+                let directionY = (Math.random() * 1) - 0.5;
+                let color = 'rgba(255, 193, 7, 0.5)'; // Color Dorado
+                
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+        
+        // Animación (Bucle)
+        function animateParticles() {
+            requestAnimationFrame(animateParticles);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connectParticles();
+        }
+        
+        // Dibujar líneas entre partículas cercanas (Estilo Constelación / Red Neuronal)
+        function connectParticles() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
+                                 + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    
+                    if (distance < (canvas.width / 10) * (canvas.height / 10)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = 'rgba(255, 193, 7, ' + opacityValue * 0.15 + ')';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        // Reajustar en cambio de tamaño de ventana
+        window.addEventListener('resize', function(){
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            initParticles();
+        });
+        
+        // Iniciar
+        initParticles();
+        animateParticles();
+        
+    </script>
+</body>
+</html>
